@@ -1,38 +1,38 @@
 
 /*
-Covid 19 Data Exploration (Exploración de datos)
-Habilidades Usadas: Joins, CTE's, Tablas temporales, Funciones ventana, Funciones agregadas, Creación de Vistas, Conversión de Tipos de Dato
+Covid 19 Data Exploration (ExploraciÃ³n de datos)
+Habilidades Usadas: Joins, CTE's, Tablas temporales, Funciones ventana, Funciones agregadas, CreaciÃ³n de Vistas, ConversiÃ³n de Tipos de Dato
 */
 
--- Seleccionamos la Data que vamos a usar para revisión previa.
+-- Seleccionamos la Data que vamos a usar para revisiÃ³n previa.
 
 SELECT location, date, total_cases, new_cases, total_deaths, population
 FROM PortfolioProject. . CovidDeaths
 ORDER BY 1,2;
 
--- Número de Casos vs Total de Muertes
--- Muestra la probabilidad de muerte al contraer Covid en Perú.
+-- NÃºmero de Casos vs Total de Muertes
+-- Muestra la probabilidad de muerte al contraer Covid en PerÃº.
 
 SELECT location, date, total_cases, total_deaths, (total_deaths/total_cases)*100 AS PorcentajedeMuerte
 FROM PortfolioProject. . CovidDeaths
 WHERE location = 'Peru'
 ORDER BY 1,2;
 
--- Muestra que porcentaje de la población en Perú contrajo Covid
+-- Muestra que porcentaje de la poblaciÃ³n en PerÃº contrajo Covid
 
 SELECT location, date, population, total_cases, (total_cases/population)*100 AS PercentPopulationInfected
 FROM PortfolioProject. . CovidDeaths
 WHERE location = 'Peru'
 ORDER BY 1,2;
 
--- Paises con un Alto Ratio de Infectados comparado a su población
+-- Paises con un Alto Ratio de Infectados comparado a su poblaciÃ³n
 
 SELECT location, population, MAX(total_cases) AS HightestInfectionCount, MAX((total_cases/population))*100 AS PorcentajedePoblacionInfectada
 FROM PortfolioProject. . CovidDeaths
 GROUP BY location, population
 ORDER BY PorcentajedePoblacionInfectada DESC;
 
--- Paises con el Número más Alto de Muertes por Población
+-- Paises con el NÃºmero mÃ¡s Alto de Muertes por PoblaciÃ³n
 
 SELECT location, continent, MAX(cast(total_deaths AS int)) AS NumerodeMuertes
 FROM PortfolioProject. . CovidDeaths
@@ -40,7 +40,7 @@ WHERE continent <> ''
 GROUP BY location, continent
 ORDER BY NumerodeMuertes DESC;
 
--- Continentes con el Número más Alto de Muertes por Población
+-- Continentes con el NÃºmero mÃ¡s Alto de Muertes por PoblaciÃ³n
 
 SELECT continent, MAX(cast(total_deaths AS int)) AS NumerodeMuertes
 FROM PortfolioProject. . CovidDeaths
@@ -49,8 +49,8 @@ GROUP BY continent
 ORDER BY NumerodeMuertes DESC;
 
 
--- Población Total vs Vacunados
--- Muestra el Porcentaje de Población que ha recibido al menos una dosis de vacuna contra el covid, usando CTE
+-- PoblaciÃ³n Total vs Vacunados
+-- Muestra el Porcentaje de PoblaciÃ³n que ha recibido al menos una dosis de vacuna contra el covid, usando CTE
 
 WITH PopvsVac (Continent, Location, Date, Population, New_Vaccinations, PersonasVacunadas)
 AS
@@ -67,7 +67,7 @@ WHERE dea.continent IS NOT NULL
 SELECT *, (PersonasVacunadas/Population)*100
 FROM PopvsVac;
 
--- Muestra el Porcentaje de Población que ha recibido a menos una dosis de vacuna contra el covid (El mismo del Query anterior), usando Tablas Temporales
+-- Muestra el Porcentaje de PoblaciÃ³n que ha recibido a menos una dosis de vacuna contra el covid (El mismo del Query anterior), usando Tablas Temporales
 
 DROP TABLE IF EXISTS #PercentPopulationVaccinated
 CREATE TABLE #PercentPopulationVaccinated
@@ -92,7 +92,7 @@ SELECT *, (PersonasVacunadas/Population)*100
 FROM #PercentPopulationVaccinated;
 
 
--- Creación de Vista para Almacenar Datos y Gestionar Visualizaciones en más adelante
+-- CreaciÃ³n de Vista para Almacenar Datos y Gestionar Visualizaciones en mÃ¡s adelante
 
 CREATE VIEW PoblacionTotalvsVacunados AS
 SELECT dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations
